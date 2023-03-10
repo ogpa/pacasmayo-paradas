@@ -44,9 +44,18 @@ def convertir_fechas(fecha_hora_string):
 
 
 def convertir_fechas_v2(fecha_hora_string):
+    fecha_hora_string = fecha_hora_string.replace("  ", " ")
     fecha_hora_string = fecha_hora_string + "x"
     fecha = fecha_hora_string[:10]
-    num_dia = datetime.datetime.strptime(fecha, "%d/%m/%Y").weekday()
+    try:
+        num_dia = datetime.datetime.strptime(fecha, "%b %d %Y").weekday()
+        nueva_fecha = datetime.datetime.strptime(fecha, "%b %d %Y")
+        fecha_string = nueva_fecha.strftime("%d/%m/%Y")
+
+    except ValueError:
+        num_dia = datetime.datetime.strptime(fecha, "%d/%m/%Y").weekday()
+        fecha_string = fecha
+
     # 0 es domingo
     if num_dia == 0:
         dia = "Lunes"
@@ -63,16 +72,39 @@ def convertir_fechas_v2(fecha_hora_string):
     elif num_dia == 6:
         dia = "Domingo"
     # return fecha, hora, dia
-    return dia
+    return dia, fecha_string
 
 
 def convertir_hora(fecha_hora_string):
-    hora = extraer_texto(fecha_hora_string, " ", "x")
-    hora_final = extraer_texto(hora, "", ":")
-    return hora_final
+    # Mar  5 2023  7:03PM
+    # 28/02/2023 19:06:00
+
+    # Si ecuentra un "slash"
+    if fecha_hora_string.find("/") != -1:
+        hora = extraer_texto(fecha_hora_string, " ", "x")
+        hora_final = extraer_texto(hora, "", ":")
+        hora_string = hora
+    else:
+        #hora = extraer_texto(fecha_hora_string, " ", "x")
+        pos_ult_doble_espacio = fecha_hora_string.rfind(" ")
+        hora = fecha_hora_string[pos_ult_doble_espacio +
+                                 1:len(fecha_hora_string)]
+        # 2 ws la longitus del doble espacio "  "
+
+        hora_pre = extraer_texto(hora, "", ":")
+        tiempo_dia = fecha_hora_string[-2]
+        minutos = extraer_texto(hora, ":", tiempo_dia)
+
+        if tiempo_dia == "A":
+            hora_final = hora_pre
+        elif tiempo_dia == "P":
+            hora_final = int(hora_pre) + 12
+        hora_string = str(hora_final) + ":" + minutos + ":00"
+    return hora_final, hora_string
 
 
 def rango_hora(desde_hora, desde_dia_de_la_semana):
+
     int_desde_hora = int(desde_hora)
     if (desde_dia_de_la_semana == "Sabado") or (desde_dia_de_la_semana == "Domingo") or (int_desde_hora < 5) or (int_desde_hora >= 19):
         rango = "Fuera de horario laboral"
@@ -145,15 +177,22 @@ def procesar_excel(ruta_archivo_paradas, placa):
         #    lambda x: convertir_fechas(x["Desde"]), axis='columns', result_type='expand')
         # df[["Hasta (fecha)", "Hasta (hora)", "Hasta (dia)"]] = df.apply(
         #    lambda x: convertir_fechas(x["Hasta"]), axis='columns', result_type='expand')
-        df["Desde (dia de la semana)"] = df.apply(
-            lambda x: convertir_fechas_v2(x["Desde"]), axis='columns')
-        df["Hasta (dia de la semana)"] = df.apply(
-            lambda x: convertir_fechas_v2(x["Hasta"]), axis='columns')
+        df[["Desde (dia de la semana)", "Desde_fecha_tmp"]] = df.apply(
+            lambda x: convertir_fechas_v2(x["Desde"]), axis='columns', result_type="expand")
+        df[["Hasta (dia de la semana)", "Hasta_fecha_tmp"]] = df.apply(
+            lambda x: convertir_fechas_v2(x["Hasta"]), axis='columns', result_type="expand")
 
-        df["Desde (hora)"] = df.apply(
-            lambda x: convertir_hora(x["Desde"]), axis='columns')
-        df["Hasta (hora)"] = df.apply(
-            lambda x: convertir_hora(x["Hasta"]), axis='columns')
+        # # Estandarizar
+        # df["Desde"] = df.apply(
+        #     lambda x: estandarizar(x["Desde"]), axis='columns')
+        # df["Hasta"] = df.apply(
+        #     lambda x: estandarizar(x["Hasta"]), axis='columns')
+        # #######################
+
+        df[["Desde (hora)", "Desde_hora_tmp"]] = df.apply(
+            lambda x: convertir_hora(x["Desde"]), axis='columns', result_type="expand")
+        df[["Hasta (hora)", "Hasta_hora_tmp"]] = df.apply(
+            lambda x: convertir_hora(x["Hasta"]), axis='columns', result_type="expand")
         df = pd.merge(df, df_coordenadas, left_index=True, right_index=True)
         df["Rango"] = df.apply(lambda x: rango_hora(
             x["Desde (hora)"], x["Desde (dia de la semana)"]), axis='columns')

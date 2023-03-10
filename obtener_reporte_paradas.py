@@ -92,6 +92,7 @@ def obtener_reporte_paradas(cookie, dict_placas_y_ids, lista_placa_cliente):
     #     id_placa = dict_placas_y_ids["id"][index]
     #     df = reporte_unitario(id_placa, placa, cookie, fechas[0], fechas[1])
     lista_dfs = []
+
     for placa in lista_placa_cliente:
         #placa = lista_placa_cliente[0]
         index = dict_placas_y_ids["placa"].index(placa)
