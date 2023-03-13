@@ -46,7 +46,7 @@ def convertir_fechas(fecha_hora_string):
 def convertir_fechas_v2(fecha_hora_string):
     fecha_hora_string = fecha_hora_string.replace("  ", " ")
     fecha_hora_string = fecha_hora_string + "x"
-    fecha = fecha_hora_string[:10]
+    fecha = fecha_hora_string[:11]
     try:
         num_dia = datetime.datetime.strptime(fecha, "%b %d %Y").weekday()
         nueva_fecha = datetime.datetime.strptime(fecha, "%b %d %Y")
@@ -95,10 +95,14 @@ def convertir_hora(fecha_hora_string):
         tiempo_dia = fecha_hora_string[-2]
         minutos = extraer_texto(hora, ":", tiempo_dia)
 
-        if tiempo_dia == "A":
+        if tiempo_dia == "A" and hora_pre!="12":
             hora_final = hora_pre
-        elif tiempo_dia == "P":
+        elif tiempo_dia == "A" and hora_pre=="12":
+            hora_final = 0
+        elif tiempo_dia == "P" and hora_pre!="12":
             hora_final = int(hora_pre) + 12
+        elif tiempo_dia == "P" and hora_pre=="12":
+            hora_final = 12
         hora_string = str(hora_final) + ":" + minutos + ":00"
     return hora_final, hora_string
 
