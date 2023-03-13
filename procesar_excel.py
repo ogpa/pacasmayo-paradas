@@ -47,6 +47,8 @@ def convertir_fechas_v2(fecha_hora_string):
     fecha_hora_string = fecha_hora_string.replace("  ", " ")
     fecha_hora_string = fecha_hora_string + "x"
     fecha = fecha_hora_string[:11]
+    if fecha[-1] == " ":
+        fecha = fecha[:-1]
     try:
         num_dia = datetime.datetime.strptime(fecha, "%b %d %Y").weekday()
         nueva_fecha = datetime.datetime.strptime(fecha, "%b %d %Y")

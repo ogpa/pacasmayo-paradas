@@ -11,7 +11,7 @@ def fechas_rango_semana():
 
     ultimo_lunes = ahora - timedelta(days=dia_de_semana)
 
-    lunes_inicio = ultimo_lunes - timedelta(days=7) + timedelta(days=4)
+    lunes_inicio = ultimo_lunes - timedelta(days=7)
     domingo_final = ultimo_lunes - timedelta(days=1)
     #domingo_final = domingo_final + timedelta(days=4)
     lunes_inicio_str = lunes_inicio.strftime("%d/%m/%Y")
