@@ -97,13 +97,13 @@ def convertir_hora(fecha_hora_string):
         tiempo_dia = fecha_hora_string[-2]
         minutos = extraer_texto(hora, ":", tiempo_dia)
 
-        if tiempo_dia == "A" and hora_pre!="12":
+        if tiempo_dia == "A" and hora_pre != "12":
             hora_final = hora_pre
-        elif tiempo_dia == "A" and hora_pre=="12":
+        elif tiempo_dia == "A" and hora_pre == "12":
             hora_final = 0
-        elif tiempo_dia == "P" and hora_pre!="12":
+        elif tiempo_dia == "P" and hora_pre != "12":
             hora_final = int(hora_pre) + 12
-        elif tiempo_dia == "P" and hora_pre=="12":
+        elif tiempo_dia == "P" and hora_pre == "12":
             hora_final = 12
         hora_string = str(hora_final) + ":" + minutos + ":00"
     return hora_final, hora_string
@@ -149,7 +149,7 @@ def procesar_excel(ruta_archivo_paradas, placa):
         "Longitud": lista_longitud
     }
     df_coordenadas = pd.DataFrame(dict_coordenadas)
-
+    # print(df_coordenadas)
     # Procesar excel
 
     df = pd.read_excel(ruta_archivo_paradas)
@@ -166,8 +166,10 @@ def procesar_excel(ruta_archivo_paradas, placa):
         print(df.columns)
         df = df[["Desde", "Hasta", "Duración", "Calle", "Kilometraje"]]
         #df = df.iloc[:, [0, 1, 2, 3, 7]]
+
         df.columns = range(df.shape[1])
         #df.to_csv("hola.csv", index=False)
+
         df = df.rename(
             columns={df.columns[0]: "Desde", df.columns[1]: "Hasta", df.columns[2]: "Duracion parada (hh:mm:ss)", df.columns[3]: "Calle", df.columns[4]: "Kilometraje"})
 
@@ -199,10 +201,16 @@ def procesar_excel(ruta_archivo_paradas, placa):
             lambda x: convertir_hora(x["Desde"]), axis='columns', result_type="expand")
         df[["Hasta (hora)", "Hasta_hora_tmp"]] = df.apply(
             lambda x: convertir_hora(x["Hasta"]), axis='columns', result_type="expand")
+        df = df.reset_index(drop=True)
+        # print(df)
         df = pd.merge(df, df_coordenadas, left_index=True, right_index=True)
+        # print(df.head(5))
         df["Rango"] = df.apply(lambda x: rango_hora(
             x["Desde (hora)"], x["Desde (dia de la semana)"]), axis='columns')
         #df.to_csv("final.csv", index=False)
         # print(df)
         df["Placa"] = placa
         return df
+
+
+#procesar_excel("paradas_hunter.xlsx", "BNV-848")
