@@ -6,7 +6,7 @@ def convertir_alias(alias):
     c = "-"
     pos_guion = alias.find(c)
     if pos_guion != -1:
-        placa = alias[pos_guion-3:pos_guion+4]
+        placa = alias[pos_guion - 3 : pos_guion + 4]
     else:
         placa = alias
     return placa
@@ -19,8 +19,8 @@ def convertir_alias(alias):
 
 def extraer_placas(login):
     doc = BeautifulSoup(login, "html.parser")
-    #print(doc(string=lambda s: "MB RENTING PACASMAYO " in s.text))
-    a = doc(string=lambda s: "MB RENTING PACASMAYO (" in s.text)
+    # print(doc(string=lambda s: "MB RENTING PACASMAYO " in s.text))
+    a = doc(string=lambda s: "MB RENTING SA (" in s.text)
     # Se asume que solo encontrará 1
     for s in doc.find_all("a", string=a[0]):
         id_nodo = s["id"]
