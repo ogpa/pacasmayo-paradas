@@ -2,26 +2,26 @@ import pandas as pd
 import datetime
 import openpyxl
 
-#ruta_archivo_paradas = "paradas_hunter.xlsx"
+# ruta_archivo_paradas = "paradas_hunter.xlsx"
 
-CABECERA_LATITUD_HIPER = 'http://maps.google.com/maps/api/staticmap?zoom=18&size=512x512&maptype=roadmap&markers=color:red%7Clabel:C%7C'
-FIN_LATITUD_HIPER = ','
-CABECERA_LONGITUD_HIPER = ','
-FIN_LONGITUD_HIPER = '&sensor=false&center='
+CABECERA_LATITUD_HIPER = "http%3A%2F%2Fmaps.google.com%2Fmaps%2Fapi%2Fstaticmap%3Fzoom%3D18%26size%3D512x512%26maptype%3Droadmap%26markers%3Dcolor%3Ared%7Clabel%3AC%7C"
+FIN_LATITUD_HIPER = "%2C"
+CABECERA_LONGITUD_HIPER = "%2C"
+FIN_LONGITUD_HIPER = "%26sensor%3Dfalse%26center%3D"
 
 
 def extraer_texto(textomaster, ini_cabecera, fin_cabecera):
     ini = textomaster.find(ini_cabecera)
-    fin = textomaster.find(fin_cabecera, ini+len(ini_cabecera))
-    texto = textomaster[ini+len(ini_cabecera):fin]
+    fin = textomaster.find(fin_cabecera, ini + len(ini_cabecera))
+    texto = textomaster[ini + len(ini_cabecera) : fin]
     return texto
 
 
 def convertir_fechas(fecha_hora_string):
     fecha_hora_string = fecha_hora_string + "x"
     fecha = fecha_hora_string[:10]
-    #fecha_hora_string = str(fecha_hora_string)
-    #hora = fecha_hora_string[-8:]
+    # fecha_hora_string = str(fecha_hora_string)
+    # hora = fecha_hora_string[-8:]
     hora = extraer_texto(fecha_hora_string, " ", "x")
     num_dia = datetime.datetime.strptime(fecha, "%d/%m/%Y").weekday()
     # 0 es domingo
@@ -46,7 +46,8 @@ def convertir_fechas(fecha_hora_string):
 def convertir_fechas_v2(fecha_hora_string):
     fecha_hora_string = fecha_hora_string.replace("  ", " ")
     fecha_hora_string = fecha_hora_string + "x"
-    fecha = fecha_hora_string[:11]
+    # fecha = fecha_hora_string[:11]
+    fecha = extraer_texto(fecha_hora_string, "", " ")
     if fecha[-1] == " ":
         fecha = fecha[:-1]
     try:
@@ -87,10 +88,9 @@ def convertir_hora(fecha_hora_string):
         hora_final = extraer_texto(hora, "", ":")
         hora_string = hora
     else:
-        #hora = extraer_texto(fecha_hora_string, " ", "x")
+        # hora = extraer_texto(fecha_hora_string, " ", "x")
         pos_ult_doble_espacio = fecha_hora_string.rfind(" ")
-        hora = fecha_hora_string[pos_ult_doble_espacio +
-                                 1:len(fecha_hora_string)]
+        hora = fecha_hora_string[pos_ult_doble_espacio + 1 : len(fecha_hora_string)]
         # 2 ws la longitus del doble espacio "  "
 
         hora_pre = extraer_texto(hora, "", ":")
@@ -110,9 +110,13 @@ def convertir_hora(fecha_hora_string):
 
 
 def rango_hora(desde_hora, desde_dia_de_la_semana):
-
     int_desde_hora = int(desde_hora)
-    if (desde_dia_de_la_semana == "Sabado") or (desde_dia_de_la_semana == "Domingo") or (int_desde_hora < 5) or (int_desde_hora >= 19):
+    if (
+        (desde_dia_de_la_semana == "Sabado")
+        or (desde_dia_de_la_semana == "Domingo")
+        or (int_desde_hora < 5)
+        or (int_desde_hora >= 19)
+    ):
         rango = "Fuera de horario laboral"
     else:
         rango = "Dentro de horario laboral"
@@ -120,11 +124,10 @@ def rango_hora(desde_hora, desde_dia_de_la_semana):
 
 
 def convertir_latitud_longitud(hipervinculo):
-    latitud = extraer_texto(
-        hipervinculo, CABECERA_LATITUD_HIPER, FIN_LATITUD_HIPER)
-    longitud = extraer_texto(
-        hipervinculo, CABECERA_LONGITUD_HIPER, FIN_LONGITUD_HIPER)
+    latitud = extraer_texto(hipervinculo, CABECERA_LATITUD_HIPER, FIN_LATITUD_HIPER)
+    longitud = extraer_texto(hipervinculo, CABECERA_LONGITUD_HIPER, FIN_LONGITUD_HIPER)
     return latitud, longitud
+
 
 # Extraer latitud y longitud de hipervinculo
 
@@ -144,10 +147,7 @@ def procesar_excel(ruta_archivo_paradas, placa):
         lista_latitud.append(coordenadas[0])
         lista_longitud.append(coordenadas[1])
 
-    dict_coordenadas = {
-        "Latitud": lista_latitud,
-        "Longitud": lista_longitud
-    }
+    dict_coordenadas = {"Latitud": lista_latitud, "Longitud": lista_longitud}
     df_coordenadas = pd.DataFrame(dict_coordenadas)
     # print(df_coordenadas)
     # Procesar excel
@@ -162,16 +162,23 @@ def procesar_excel(ruta_archivo_paradas, placa):
         # print(df)
         # df.drop([1])
         # print(df)
-        #df.columns = range(df.shape[1])
+        # df.columns = range(df.shape[1])
         print(df.columns)
         df = df[["Desde", "Hasta", "Duración", "Calle", "Kilometraje"]]
-        #df = df.iloc[:, [0, 1, 2, 3, 7]]
+        # df = df.iloc[:, [0, 1, 2, 3, 7]]
 
         df.columns = range(df.shape[1])
-        #df.to_csv("hola.csv", index=False)
+        # df.to_csv("hola.csv", index=False)
 
         df = df.rename(
-            columns={df.columns[0]: "Desde", df.columns[1]: "Hasta", df.columns[2]: "Duracion parada (hh:mm:ss)", df.columns[3]: "Calle", df.columns[4]: "Kilometraje"})
+            columns={
+                df.columns[0]: "Desde",
+                df.columns[1]: "Hasta",
+                df.columns[2]: "Duracion parada (hh:mm:ss)",
+                df.columns[3]: "Calle",
+                df.columns[4]: "Kilometraje",
+            }
+        )
 
         # Desde fecha
         # Desde hora
@@ -186,9 +193,15 @@ def procesar_excel(ruta_archivo_paradas, placa):
         # df[["Hasta (fecha)", "Hasta (hora)", "Hasta (dia)"]] = df.apply(
         #    lambda x: convertir_fechas(x["Hasta"]), axis='columns', result_type='expand')
         df[["Desde (dia de la semana)", "Desde_fecha_tmp"]] = df.apply(
-            lambda x: convertir_fechas_v2(x["Desde"]), axis='columns', result_type="expand")
+            lambda x: convertir_fechas_v2(x["Desde"]),
+            axis="columns",
+            result_type="expand",
+        )
         df[["Hasta (dia de la semana)", "Hasta_fecha_tmp"]] = df.apply(
-            lambda x: convertir_fechas_v2(x["Hasta"]), axis='columns', result_type="expand")
+            lambda x: convertir_fechas_v2(x["Hasta"]),
+            axis="columns",
+            result_type="expand",
+        )
 
         # # Estandarizar
         # df["Desde"] = df.apply(
@@ -198,19 +211,23 @@ def procesar_excel(ruta_archivo_paradas, placa):
         # #######################
 
         df[["Desde (hora)", "Desde_hora_tmp"]] = df.apply(
-            lambda x: convertir_hora(x["Desde"]), axis='columns', result_type="expand")
+            lambda x: convertir_hora(x["Desde"]), axis="columns", result_type="expand"
+        )
         df[["Hasta (hora)", "Hasta_hora_tmp"]] = df.apply(
-            lambda x: convertir_hora(x["Hasta"]), axis='columns', result_type="expand")
+            lambda x: convertir_hora(x["Hasta"]), axis="columns", result_type="expand"
+        )
         df = df.reset_index(drop=True)
         # print(df)
         df = pd.merge(df, df_coordenadas, left_index=True, right_index=True)
         # print(df.head(5))
-        df["Rango"] = df.apply(lambda x: rango_hora(
-            x["Desde (hora)"], x["Desde (dia de la semana)"]), axis='columns')
-        #df.to_csv("final.csv", index=False)
+        df["Rango"] = df.apply(
+            lambda x: rango_hora(x["Desde (hora)"], x["Desde (dia de la semana)"]),
+            axis="columns",
+        )
+        # df.to_csv("final.csv", index=False)
         # print(df)
         df["Placa"] = placa
         return df
 
 
-#procesar_excel("paradas_hunter.xlsx", "BNV-848")
+# procesar_excel("paradas_hunter.xlsx", "BNV-848")
