@@ -130,25 +130,25 @@ def obtener_reporte_paradas(cookie, dict_placas_y_ids, lista_placa_cliente):
     #     id_placa = dict_placas_y_ids["id"][index]
     #     df = reporte_unitario(id_placa, placa, cookie, fechas[0], fechas[1])
     # lista_dfs = []
-    # lista_original = ["BFG-898"]  # Modificado 24/05/2023
+    lista_original = ["BLV-785"]  # Modificado 24/05/2023
     lista_total = []
     for par_fechas in fechas:
         for placa in lista_placa_cliente:
             # placa = lista_placa_cliente[0]
-            # if placa in lista_original:  # Modificado 24/05/2023
-            index = dict_placas_y_ids["placa"].index(placa)
-            id_placa = dict_placas_y_ids["id"][index]
-            print(placa)
-            print(id_placa)
-            ruta_archivo_paradas = reporte_unitario(
-                id_placa, placa, cookie, par_fechas[0], par_fechas[1]
-            )
+            if placa in lista_original:  # Modificado 24/05/2023
+                index = dict_placas_y_ids["placa"].index(placa)
+                id_placa = dict_placas_y_ids["id"][index]
+                print(placa)
+                print(id_placa)
+                ruta_archivo_paradas = reporte_unitario(
+                    id_placa, placa, cookie, par_fechas[0], par_fechas[1]
+                )
 
-            # Retorna el df de una placa
-            df = procesar_excel(ruta_archivo_paradas, placa)
+                # Retorna el df de una placa
+                df = procesar_excel(ruta_archivo_paradas, placa)
 
-            # lista_dfs.append(df)
-            lista_total.append(df)
+                # lista_dfs.append(df)
+                lista_total.append(df)
             # df_total = pd.merge(df_total, df)
         # lista_total.append(lista_dfs)
     # print(df)

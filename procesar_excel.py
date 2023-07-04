@@ -1,6 +1,7 @@
 import pandas as pd
 import datetime
 import openpyxl
+import locale
 
 # ruta_archivo_paradas = "paradas_hunter.xlsx"
 
@@ -22,8 +23,12 @@ def convertir_fechas(fecha_hora_string):
     fecha = fecha_hora_string[:10]
     # fecha_hora_string = str(fecha_hora_string)
     # hora = fecha_hora_string[-8:]
-    hora = extraer_texto(fecha_hora_string, " ", "x")
-    num_dia = datetime.datetime.strptime(fecha, "%d/%m/%Y").weekday()
+    # hora = extraer_texto(fecha_hora_string, " ", "x")
+    print("fecha", fecha)
+    try:
+        num_dia = datetime.datetime.strptime(fecha, "%d/%m/%Y").weekday()
+    except:
+        num_dia = datetime.datetime.strptime(fecha, "%d/%m/%Y").weekday()
     # 0 es domingo
     if num_dia == 0:
         dia = "Lunes"
@@ -45,11 +50,31 @@ def convertir_fechas(fecha_hora_string):
 
 def convertir_fechas_v2(fecha_hora_string):
     fecha_hora_string = fecha_hora_string.replace("  ", " ")
-    fecha_hora_string = fecha_hora_string + "x"
+    fecha_hora_string = fecha_hora_string.strip()
+    # print(fecha_hora_string)
+    # fecha_hora_string = fecha_hora_string + "x"
+    print(fecha_hora_string)
     # fecha = fecha_hora_string[:11]
-    fecha = extraer_texto(fecha_hora_string, "", " ")
+    if fecha_hora_string[3] == " ":
+        fecha = fecha_hora_string[0:11]
+        mes = fecha[0:3]
+        match mes:
+            case "Ene":
+                mes_nuevo = "Jan"
+            case "Abr":
+                mes_nuevo = "Apr"
+            case "Ago":
+                mes_nuevo = "Aug"
+            case "Dic":
+                mes_nuevo = "Dec"
+        fecha = fecha.replace(mes, mes_nuevo)
+    else:
+        fecha = extraer_texto(fecha_hora_string, "", " ")
+
     if fecha[-1] == " ":
         fecha = fecha[:-1]
+
+    # locale.setlocale(locale.LC_TIME, "es_ES")
     try:
         num_dia = datetime.datetime.strptime(fecha, "%b %d %Y").weekday()
         nueva_fecha = datetime.datetime.strptime(fecha, "%b %d %Y")
