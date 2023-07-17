@@ -130,12 +130,14 @@ def obtener_reporte_paradas(cookie, dict_placas_y_ids, lista_placa_cliente):
     #     id_placa = dict_placas_y_ids["id"][index]
     #     df = reporte_unitario(id_placa, placa, cookie, fechas[0], fechas[1])
     # lista_dfs = []
-    lista_original = ["BLV-785"]  # Modificado 24/05/2023
+    #lista_original = ["BLV-785"]  # Modificado 24/05/2023
+    # Usen esta lista si quieren tomar en cuenta solo ciertas placas
+    # Si quieren que salgan todas, comentar línea de lista_orignal y "if placa in lista_original"
     lista_total = []
     for par_fechas in fechas:
         for placa in lista_placa_cliente:
             # placa = lista_placa_cliente[0]
-            if placa in lista_original:  # Modificado 24/05/2023
+            #if placa in lista_original:  # Modificado 24/05/2023
                 index = dict_placas_y_ids["placa"].index(placa)
                 id_placa = dict_placas_y_ids["id"][index]
                 print(placa)

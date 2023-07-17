@@ -53,7 +53,7 @@ def convertir_fechas_v2(fecha_hora_string):
     fecha_hora_string = fecha_hora_string.strip()
     # print(fecha_hora_string)
     # fecha_hora_string = fecha_hora_string + "x"
-    print(fecha_hora_string)
+    #print(fecha_hora_string)
     # fecha = fecha_hora_string[:11]
     if fecha_hora_string[3] == " ":
         fecha = fecha_hora_string[0:11]

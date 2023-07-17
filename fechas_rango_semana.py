@@ -13,8 +13,8 @@ def fechas_rango_semana():
 
     # ultimo_lunes = ahora - timedelta(days=dia_de_semana)
 
-    fecha_inicio = datetime(2023, 4, 1)
-    fecha_final = datetime(2023, 6, 30)
+    fecha_inicio = datetime(2023, 6, 10)
+    fecha_final = datetime(2023, 6, 16)
     diferencia_dias_temp = fecha_final - fecha_inicio
     diferencia_dias = diferencia_dias_temp.days
     lista_fechas = []
@@ -34,7 +34,7 @@ def fechas_rango_semana():
         contador = contador + 1
         helper = helper + 1
         diferencia_dias = diferencia_dias - MAXIMO_RANGO_DIAS - 1
-    print(lista_fechas)
+    #print(lista_fechas)
     # lunes_inicio = ultimo_lunes - timedelta(days=7)
     # domingo_final = ultimo_lunes - timedelta(days=1)
     # domingo_final = domingo_final + timedelta(days=4)

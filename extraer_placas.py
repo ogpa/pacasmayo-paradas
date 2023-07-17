@@ -20,7 +20,7 @@ def convertir_alias(alias):
 def extraer_placas(login):
     doc = BeautifulSoup(login, "html.parser")
     # print(doc(string=lambda s: "MB RENTING PACASMAYO " in s.text))
-    a = doc(string=lambda s: "MB PROCAMPO (" in s.text)
+    a = doc(string=lambda s: "MB RENTING PACASMAYO (" in s.text) # Cambiar esto al grupo que figura en la plataforma de Hunter. Dejar el paréntesis al final
     # Se asume que solo encontrará 1
     for s in doc.find_all("a", string=a[0]):
         id_nodo = s["id"]
