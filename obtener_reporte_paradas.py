@@ -106,7 +106,9 @@ def reporte_unitario(id_placa, placa, cookie, fecha_inicio, fecha_fin):
         "POST", url_Excel, headers=headers_Excel, data=payload_Excel
     )
     nombreArchivo_Paradas = "paradas_hunter.xlsx"
+    fo = open(nombreArchivo_Paradas, "wb")
     open(nombreArchivo_Paradas, "wb").write(response_Excel.content)
+    fo.close()
     return nombreArchivo_Paradas
 
 
